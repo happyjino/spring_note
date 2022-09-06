@@ -1,0 +1,18 @@
+<!-- 리소스 폴더(src/main/resoureces)에 만들기! -->
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="ps01" class="com.care.di_test.PrintString" />
+	
+	<bean id="pb01" class="com.care.di_test.PrintBean" >
+		<property name="ps">
+			<ref bean="ps01" />
+		</property>
+        <!-- <property name="" ref="" />로도 가능! -->
+		<property name="print" value="이걸 출력" />
+	</bean>
+	
+</beans>
