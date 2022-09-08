@@ -1,0 +1,61 @@
+null pointer excpetion 에러 : 객체가 null인 상태일때 뜬다!
+객체 x를 사용하려면
+x.equals() 이렇게 .을 찍고 사용한다.
+하지만 x가 null이라면 아무것도 할 수 없다!
+
+스프링에서는 원래 객체를 코드로 만들지 않고 xml에서 설정해서 사용한다.
+하지만 요즘 추세는 다시 자바코드에 작성하기 시작했다.
+이때 이용하는 것이 어노테이션이다.
+@service, @Repository를 이용해서 객체(bean)을 만든다.
+
+그럼 기존에 객체를 만들어 사용하는 것이 null값을 가진다!
+이때 bean으로 만들어놓은 객체를 변수와 연결해주어야 하는데 @Autowired를 이용해서 연결해준다.
+ex) 
+@Autowired MemberDAO dao;
+dao.index();
+
+에러에서 Autowired(required=true) -> 해당하는 객체가 없구나 알 수 있다.
+
+어노테이션은 @Component, @Service, @Repository 아무거나 써도 상관없지만
+보편적으로 이해할 수 있게 기능에 맞는 어노테이션을 사용한다.
+
+mvc 01에서는 어노테이션을 통한 bean 생성 및 연결해서 이용하는 것을 배웠다.
+
+빈 등록할 때는 클래스 이름의 첫 글자를 소문자로 만들어서 객체를 만든다.
+다른 패키지든 어디에서든 똑같은 이름이 있으면 에러가 난다.
+이럴 때는 어노테이션("이름") 이렇게 이름을 설정해준다~
+
+	<form action="result" method="get">
+		<input type="text" name="name"><br>
+		<input type="text" name="age"><br>
+		<input type="submit" name="전송"><br>
+	</form>
+이 폼은 입력값을 상대경로로 보내서 마지막 / 뒤의 내용을 result로 바꾸는 경로가 된다.
+
+@RequestMapping -> get, post 둘다 가능
+@GetMapping, PostMapping -> get 또는 Post만 가능
+
+form을 통해 정보가 전송되는 것을 확인했으니 그 다음엔 Model 객체를 이용해 Model 객체로 넘겨주기!
+
+return 타입을 String으로 바꾸고 model.addAttribute()를 이용해 값을 저장하고 리턴으로 경로를 넘겨준다. return "get_post/result";
+result.jsp를 만들고 ${}을 이용해서 불러온다~
+
+위에서 사용한 HttpServletRequest를 사용하는 것은 옛날에 많이 사용
+@RequestParam 사용하면 넘겨오는 값을 바로 변수에 넘겨주겠다는 것!
+@RequestParam은 int로 바로 형식을 지정해서 문자열을 각 형식에 맞게 변환시켜줄 수 있다!
+받아올 때 이름은 넘겨올때 이름과 같도록 만들어준다.
+다르면 @RequestParam("이름")으로 명시를 해줘야한다!
+
+넘겨올때 이름과 사용하는 것이 똑같이 name으로 같으면
+@RequestParam 자체를 생략해줘도 되지만 명시해주도록 한다!
+
+MyController.java 파일에 겹치는 경로가 많으므로 
+my를 따로 빼줄 수 있다!!
+
+MyDTO.java 추가
+name, age 변수 추가, getter setter 설정
+index.jsp 에 post랑 똑같이 폼 복붙, 경로 dto 설정
+MyController.java 에 dto 경로 만들어주기
+dto 만들어주고 처리해주기!
+
+dto는 뭔가 안될것 같았는데 dto 자체가 getter, setter를 보고 설정해주므로 된다! 이때 이름 잘 맞춰줘야한다~ 

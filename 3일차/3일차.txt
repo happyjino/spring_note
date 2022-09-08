@@ -1,0 +1,130 @@
+src/main/java -> 순수한 자바 코드(class, interface)
+src/main/resources -> 
+src/test/java
+src/test/resources
+
+test는 서버와 같이 움직일 때 미리 테스트하는 용도로 사용
+서버 구동하는데 4시간이 걸린다고 가정 -> 사용자가 사용 도중 버그 발생
+-> 수정하고 구동하는데 4시간 걸림 -> 또 버그 발생 -> 또 수정하고 구동하는데 버그 발생
+--> 시간이 너무 오래 걸린다!
+test는 서버없이 코드를 확인할 때 사용!!!
+문제 발생 시 main에서 확인하지 않고 test에서 확인한다!!!
+
+jre system library -> 기본적으로 설치되어 있는 다양한 라이브러리들(array, scanner 등등)
+
+maven dependencies -> spring에는 maven이 있다~
+
+src/main/webapp/resource -> static 파일들을 주로 넣는다. css, html, image 등등
+
+web.xml -> 이 파일에 작성되어 있는대로 실행시켜준다. 서버를 구동시키면 web.xml부터 본다고 생각
+views -> jsp 파일 작성해서 사용
+spring -> root-context.xml : 설정에 관련되어 있는 파일
+appServlet -> servlet-context.xml : 설정과 관련되어 있는 파일
+target -> 배포하는 파일 관련
+pom.xml -> 라이브러리 관리, 들어가보면 버전들이 막 보이는데 그에 맞는 라이브러리를 받아온다!
+
+첫 설정하기
+window - web browser -> chrome
+window - preferences 
+-> general -> workspace -> text file encoding -> utf-8
+-> web -> jsp files -> encoding -> 제일 위 utf-8
+
+버전 바꾸기(pom.xml)
+artifactId -> 경로 잡는데 사용
+packaging -> 압축 -> 배포할 때 .war로 압축
+version -> 배포할 때 버전
+자바 1.6 -> 18로 수정
+스프링 3.1.1 -> 5.2.1로 수정
+--> maven dependencies 에 버전도 5.2.1로 다 바뀐다~~
+pom.xml에서 버전을 보고 라이브러리를 maven dependencies로 다운받아 관리한다!
+
+96, 97번째 줄
+javax.servlet-api
+3.1.0으로 수정
+
+139번째 줄
+maven 관련 버전 3.5.1
+
+141, 142번째 줄
+1.8로 수정
+
+pom.xml 수정 후 제대로 반영이 안되어있다면 maven update 하기
+프로젝트 우클릭 - maven - update project (alt + f5)
+
+src- main - webapp - web-inf - web.xml -> </web-app> 앞에 붙여넣기! 
+한글처리 해주는것! 복붙해서 사용하기~
+web.xml 보면서 서버 설정
+url pattern -> /* -> 모든 경로에 대해서 encoding Filter 적용 -> utf-8로 적용
+<filter>
+   <filter-name>encodingFilter</filter-name>
+   <filter-class>
+      org.springframework.web.filter.CharacterEncodingFilter     
+   </filter-class>
+   <init-param>
+      <param-name>encoding</param-name>   
+      <param-value>UTF-8</param-value>
+   </init-param>
+   <init-param>
+      <param-name>forceEncoding</param-name>  
+      <param-value>true</param-value>
+   </init-param>
+</filter>    
+<filter-mapping>
+   <filter-name>encodingFilter</filter-name>
+   <url-pattern>/*</url-pattern>                 
+</filter-mapping> 
+
+@abc -> 어노테이션
+abc로 인식하게 한다!
+
+MyController, login, logout, index 만들기
+
+index 출력하기
+1.<h1>출력</h1> - index
+2. MyController -> @RequestMapping...
+value : 사용자가 요청하는 것
+method : 생략하면 post, get 전부 처리
+member/index : 멤버 폴더의 인덱스로 연결
+
+@Controller라는 어노테이션을 클래스 위에 적기! -> 이게 있어야 인식된다
+
+HomeController의 모델을 사용해보자!
+1. login 연결하기 -> @RequestMapping("login") 메소드를 안 적을 시 value 생략하고 "login"만 가능
+Model 불러오기~
+model.addAttribute("test", "연습중!!!"); 이걸로 사용
+사용하는 이유? -> 로그인을 하거나 회원의 정보를 볼때 db에서 받아온걸 jsp로 연결해줄때 모델을 사용한다! 키와 값으로 하나의 쌍을 만들어 사용("test", "연습중!!");
+model은 request에 대한 범위이다~ 따라서 member/login 까지만 연결된다~
+다른 페이지로 이동하는 redirect를 이용하면 모델은 전달안된다.
+
+test : ${test }<br>
+request : <%= request.getAttribute("test") %>
+이렇게 사용가능
+
+@GetMapping -> get 방식에 대해서만 적용!(form 빼고 전부 get 방식)
+ModelAndView 방식 -> ModelAndView로 새로운 객체를 만들어서 사용!
+
+상대경로 : 마지막 슬래쉬 다음을 바꿔준다.
+절대 경로 : 포트번호 다음을 바꿔준다. /로 시작한다.
+
+servers -> server.xml 파일 제일 마지막쯤 context에 /mvc 경로를 지정해 준것이 있다.
+이걸 /abcd로 바꾸면 /abcd/index 이렇게 들어가야 한다.
+따라서 <%= request.getContextPath() %>를 이용해서 넣는다. 
+/mvc 경로가 수정되도 내가 만든 프로그램에 문제가 발생하지 않는다.
+
+서버 구동하면 web.xml 실행한다!!
+내용을 보면 root-context.xml을 실행한다.
+root-context.xml 파일에 밑에 내용을 추가하고 TestClass 만들고 생성자 만들면 생성자가 실행되는 것을 확인할 후 있다!!!
+<bean id="test" class="com.care.mvc.TestClass" />
+
+그다음 디스패처 서블렛을 실행한다.
+컨트롤러에서 경로를 리턴해주면 prefix, suffix랑 합쳐져서 파일이 실행된다.
+
+component-scan => 패키지 경로에 있는 특정 어노테이션들을 객체(bean)으로 만들어준다!
+패키지 경로를 그냥 하나더 추가하거나 com.care.mvc -> com.care로 바꿔준다.
+경로 및 경로 하위에 있는 어노테이션을 찾아서 객체로 만들어준다.
+
+@Service : 연산을 담당, 데이터베이스나 jsp로부터 받아온 데이터를 연산
+@Repository : 데이터 베이스와 연결되는 코드
+@Component : 위와 다르게 의미없이 단순히 객체(bean)를 만들때 사용!
+
+
